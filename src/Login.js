@@ -1,20 +1,38 @@
 import React, { useState } from "react";
 import "./Login.css";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Button } from "@material-ui/core";
+import { auth } from "./firebase";
 
 function Login() {
+  const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const signIn = (e) => {
     e.preventDefault();
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then((auth) => {
+        history.push("/");
+      })
+      .catch((error) => alert(error.message));
 
     //firebase
   };
 
   const register = (e) => {
     e.preventDefault();
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((auth) => {
+        //successful registration
 
+        console.log(auth);
+        if (auth) {
+          history.push("/");
+        }
+      })
+      .catch((error) => alert(error.message));
     //firebase
   };
   return (
@@ -57,7 +75,7 @@ function Login() {
           Privacy Notice.
         </p>
 
-        <button className="login__registerButton" onCLick={register}>
+        <button className="login__registerButton" onClick={register}>
           Create Amazon Account
         </button>
       </div>
